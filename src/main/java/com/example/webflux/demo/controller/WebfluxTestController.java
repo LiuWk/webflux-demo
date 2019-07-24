@@ -1,6 +1,5 @@
 package com.example.webflux.demo.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.example.webflux.demo.bean.dto.UserInfoDTO;
 import com.example.webflux.demo.bean.response.Response;
 import com.example.webflux.demo.constant.Code;
@@ -25,20 +24,26 @@ public class WebfluxTestController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("test")
+    @GetMapping(value = "test")
     public Mono test() {
         return Mono.just(new Response(Code.SUCCESS, "test 成功", "啊啊啊啊啊啊啊"));
     }
 
-    @PostMapping("objectMono")
+    @PostMapping(value = "objectMono")
     public Mono<Object> objectMono() {
         List<String> list = Arrays.asList("12", "3", "11", "44", "10");
         return Mono.just(list);
     }
 
-    @PostMapping("saveUser")
+    @PostMapping(value = "saveUser")
     public Mono<UserInfoDTO> saveUser(@RequestBody UserInfoDTO userInfoDTO) {
         return userRepository.insert(userInfoDTO);
+    }
+
+    @GetMapping(value = "getUser/phone/{phone}")
+    public Mono<UserInfoDTO> getUser(@PathVariable("phone") String phone) {
+        UserInfoDTO dto = userRepository.findUserInfoDTOByPhone(phone);
+        return Mono.just(dto);
     }
 
 
@@ -57,7 +62,11 @@ public class WebfluxTestController {
             }
             return "flux data--" + i;
         }));
-        System.out.println("webflux() end use time "+(System.currentTimeMillis() - timeMillis)+" ms");
+        System.out.println("webflux() end use time " + (System.currentTimeMillis() - timeMillis) + " ms");
+
+        System.out.println("最大内存" + Runtime.getRuntime().maxMemory() / 1024 / 1024 + "M");
+        System.out.println("可用内存" + Runtime.getRuntime().freeMemory() / 1024 / 1024 + "M");
+        System.out.println("已使用内存" + Runtime.getRuntime().totalMemory() / 1024 / 1024 + "M");
     }
 
 }

@@ -31,6 +31,7 @@
         <joda-time.version>2.10.2</joda-time.version>
         <curator.version>4.2.0</curator.version>
         <zookeeper.version>3.5.5</zookeeper.version>
+        <spring-kafka.version>2.2.7.RELEASE</spring-kafka.version>
     </properties>
 
     <dependencies>
@@ -193,6 +194,19 @@
             <artifactId>zookeeper</artifactId>
             <version>${zookeeper.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka -->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <version>${spring-kafka.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.im4java/im4java -->
+        <dependency>
+            <groupId>org.im4java</groupId>
+            <artifactId>im4java</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+
 
     </dependencies>
 
