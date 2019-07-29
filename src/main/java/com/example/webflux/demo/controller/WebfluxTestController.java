@@ -5,6 +5,8 @@ import com.example.webflux.demo.bean.response.Response;
 import com.example.webflux.demo.constant.Code;
 import com.example.webflux.demo.handler.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -26,6 +28,7 @@ public class WebfluxTestController {
 
     @GetMapping(value = "test")
     public Mono test() {
+        System.out.println("test");
         return Mono.just(new Response(Code.SUCCESS, "test 成功", "啊啊啊啊啊啊啊"));
     }
 
@@ -41,15 +44,16 @@ public class WebfluxTestController {
     }
 
     @GetMapping(value = "getUser/phone/{phone}")
-    public Mono<UserInfoDTO> getUser(@PathVariable("phone") String phone) {
-        UserInfoDTO dto = userRepository.findUserInfoDTOByPhone(phone);
-        return Mono.just(dto);
+    public Mono<ResponseEntity<UserInfoDTO>> getUser(@PathVariable("phone") String phone) {
+        return userRepository.findUserInfoDTOByPhoneEquals(phone)
+                .map(o -> new ResponseEntity<>(o, HttpStatus.OK))
+                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
 
     public static void main(String[] args) {
 
-        Flux.just(1, 2, 3, 445, 5, 6, 9).subscribe(System.out::println, System.err::println,
+        Flux.just(1, 2, 3, 445, 5, 6, 9).subscribe(System.out::print, System.err::println,
                 () -> System.out.println("Complete!"));
 
         long timeMillis = System.currentTimeMillis();
@@ -63,6 +67,8 @@ public class WebfluxTestController {
             return "flux data--" + i;
         }));
         System.out.println("webflux() end use time " + (System.currentTimeMillis() - timeMillis) + " ms");
+        // 真正用这个结果的时候才会阻塞5s
+        System.out.println(result.blockFirst());
 
         System.out.println("最大内存" + Runtime.getRuntime().maxMemory() / 1024 / 1024 + "M");
         System.out.println("可用内存" + Runtime.getRuntime().freeMemory() / 1024 / 1024 + "M");

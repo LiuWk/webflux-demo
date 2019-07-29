@@ -62,5 +62,10 @@ public class Utils {
     public static void main(String[] args) {
         System.out.println(md5("123456", "15211110000"));
         System.out.println(hasEmpty(null, ""));
+        Integer a = 127;
+        Integer b = 127;
+        System.out.println(a==b);
+        System.out.println(a.equals(b));
+        System.out.println(Integer.valueOf(10));
     }
 }

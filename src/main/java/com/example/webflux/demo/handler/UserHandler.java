@@ -30,6 +30,7 @@ public class UserHandler {
      */
     @Nullable
     public Mono<ServerResponse> helloUser(ServerRequest serverRequest) {
+
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just("成功"), String.class);
     }
 
@@ -41,20 +42,23 @@ public class UserHandler {
      */
     @Nullable
     public Mono<ServerResponse> getUserInfo(ServerRequest serverRequest) {
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).
-                body(userRepository.findById(serverRequest.pathVariable("id")), UserInfoDTO.class);
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(userRepository.findById(serverRequest.pathVariable("id")), UserInfoDTO.class)
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     /**
      * 查询列表
      *
-     * @param serverRequest
+     * @param serverRequest 传入的参数
      * @return
      */
     @Nullable
     public Mono<ServerResponse> userList(ServerRequest serverRequest) {
         Flux<UserInfoDTO> list = userRepository.findAll();
-        return ServerResponse.ok().contentType(MediaType.TEXT_EVENT_STREAM).body(list, UserInfoDTO.class);
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(list, UserInfoDTO.class)
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     /**
