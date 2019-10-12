@@ -1,12 +1,14 @@
 package com.example.webflux.demo.handler;
 
 import com.example.webflux.demo.bean.dto.UserInfoDTO;
-import com.example.webflux.demo.handler.repository.UserRepository;
+import com.example.webflux.demo.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
@@ -21,7 +23,7 @@ import reactor.util.annotation.Nullable;
 public class UserHandler {
     private final static Logger logger = LoggerFactory.getLogger(UserHandler.class);
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     /**
      * 测试用方法
@@ -42,8 +44,9 @@ public class UserHandler {
      */
     @Nullable
     public Mono<ServerResponse> getUserInfo(ServerRequest serverRequest) {
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-                .body(userRepository.findById(serverRequest.pathVariable("id")), UserInfoDTO.class)
+        Mono<UserInfoDTO> user = userService.findById(serverRequest.pathVariable("id"));
+        return user.flatMap(userInfoDTO -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromPublisher(user, UserInfoDTO.class)))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
@@ -55,7 +58,7 @@ public class UserHandler {
      */
     @Nullable
     public Mono<ServerResponse> userList(ServerRequest serverRequest) {
-        Flux<UserInfoDTO> list = userRepository.findAll();
+        Flux<UserInfoDTO> list = userService.findAll();
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(list, UserInfoDTO.class)
                 .switchIfEmpty(ServerResponse.notFound().build());
@@ -67,12 +70,19 @@ public class UserHandler {
      * @param serverRequest
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     @Nullable
     public Mono<ServerResponse> saveUser(ServerRequest serverRequest) {
         // 相当于@ResponseBody
         Mono<UserInfoDTO> user = serverRequest.bodyToMono(UserInfoDTO.class);
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-                .body(userRepository.insert(user), UserInfoDTO.class);
+                .body(userService.insert(user), UserInfoDTO.class);
+    }
+
+    @Nullable
+    public Mono<ServerResponse> getUserByPhone(ServerRequest serverRequest) {
+        Mono<UserInfoDTO> user = userService.findUserInfoDTOByPhoneEquals(serverRequest.pathVariable("phone"));
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(user, UserInfoDTO.class);
     }
 
     /**

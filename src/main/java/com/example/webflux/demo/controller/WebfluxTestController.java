@@ -1,18 +1,24 @@
 package com.example.webflux.demo.controller;
 
+import com.example.webflux.demo.bean.dto.TestEntity;
 import com.example.webflux.demo.bean.dto.UserInfoDTO;
 import com.example.webflux.demo.bean.response.Response;
 import com.example.webflux.demo.constant.Code;
-import com.example.webflux.demo.handler.repository.UserRepository;
+import com.example.webflux.demo.service.repository.MapRepository;
+import com.example.webflux.demo.service.repository.TestEntityRepository;
+import com.example.webflux.demo.service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
@@ -25,6 +31,10 @@ import java.util.stream.IntStream;
 public class WebfluxTestController {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private TestEntityRepository testEntityRepository;
+    @Autowired
+    private MapRepository mapRepository;
 
     @GetMapping(value = "test")
     public Mono test() {
@@ -38,9 +48,23 @@ public class WebfluxTestController {
         return Mono.just(list);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @PostMapping(value = "saveUser")
     public Mono<UserInfoDTO> saveUser(@RequestBody UserInfoDTO userInfoDTO) {
+        userInfoDTO.setCreateDate(new Date());
         return userRepository.insert(userInfoDTO);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @PostMapping(value = "saveEnt")
+    public Mono<TestEntity> saveEnt(@RequestBody TestEntity testEntity) {
+        return testEntityRepository.insert(testEntity);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @PostMapping(value = "saveMap")
+    public Mono<Map> saveMap(@RequestBody Map map) {
+        return mapRepository.insert(map);
     }
 
     @GetMapping(value = "getUser/phone/{phone}")

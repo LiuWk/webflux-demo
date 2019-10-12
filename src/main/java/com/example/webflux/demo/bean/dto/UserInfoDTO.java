@@ -2,6 +2,7 @@ package com.example.webflux.demo.bean.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.annotation.Id;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
@@ -17,6 +18,7 @@ public class UserInfoDTO {
     private String name;
     private String address;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createDate;
 
     @Id

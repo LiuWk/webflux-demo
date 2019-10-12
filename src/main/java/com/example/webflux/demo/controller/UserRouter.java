@@ -34,7 +34,8 @@ public class UserRouter implements WebFluxConfigurer {
         return RouterFunctions.route(RequestPredicates.GET("/user/hello"), userHandler::helloUser)
                 .andRoute(RequestPredicates.GET("/user/userList"), userHandler::userList)
                 .andRoute(RequestPredicates.POST("/user/save"),userHandler::saveUser)
-                .andRoute(RequestPredicates.GET("/user/{id}"),userHandler::getUserInfo);
+                .andRoute(RequestPredicates.GET("/user/id/{id}"),userHandler::getUserInfo)
+                .andRoute(RequestPredicates.GET("/user/phone/{phone}"),userHandler::getUserByPhone);
     }
 
 }

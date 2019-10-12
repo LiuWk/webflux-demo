@@ -1,4 +1,4 @@
-package com.example.webflux.demo.handler.repository;
+package com.example.webflux.demo.service.repository;
 
 import com.example.webflux.demo.bean.dto.UserInfoDTO;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;

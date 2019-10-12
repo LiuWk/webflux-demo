@@ -82,10 +82,9 @@ spring:
   # mongodb 配置
   data:
     mongodb:
-      host: 10.141.84.195
+      host: 192.168.169.133
       port: 27017
-      database: admin
-      password: ")+u3I]/9xd.A*Knv*Xn4"
+      database: test
 # 监控关闭
 management:
   security:
