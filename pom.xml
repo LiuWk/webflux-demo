@@ -23,7 +23,7 @@
         <swagger2.version>2.9.2</swagger2.version>
         <swagger2-ui.version>2.9.2</swagger2-ui.version>
         <jedis.version>3.0.1</jedis.version>
-        <fastjson.version>1.2.58</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
         <jwt.version>3.4.0</jwt.version>
         <commons-lang3.version>3.9</commons-lang3.version>
         <poi.version>4.1.0</poi.version>
